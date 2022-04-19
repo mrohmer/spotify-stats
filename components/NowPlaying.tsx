@@ -9,6 +9,9 @@ export interface Props {
   progress: number;
   duration: number;
   isPlaying: boolean;
+  colors?: {
+    progressBar?: string;
+  }
 }
 
 export const Player: React.FC<Props> = ({
@@ -18,6 +21,7 @@ export const Player: React.FC<Props> = ({
   progress,
   duration,
   isPlaying,
+  colors,
 }) => {
   return (
     <ReadmeImg width="540" height="64">
@@ -63,7 +67,7 @@ export const Player: React.FC<Props> = ({
               width: 100%;
               height: 6px;
               transform-origin: left center;
-              background-color: #24292e;
+              background-color: ${colors?.progressBar ?? '#780000'};
               animation: progress ${duration}ms linear;
               animation-delay: -${progress}ms;
             }

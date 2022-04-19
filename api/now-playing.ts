@@ -1,7 +1,7 @@
 import { NowRequest, NowResponse } from "@vercel/node";
 import { renderToString } from "react-dom/server";
 import { decode } from "querystring";
-import { Player } from "../components/NowPlaying";
+import { Player, Props as PlayerProps } from "../components/NowPlaying";
 import { nowPlaying } from "../utils/spotify";
 
 export default async function (req: NowRequest, res: NowResponse) {
@@ -36,9 +36,14 @@ export default async function (req: NowRequest, res: NowResponse) {
     coverImg = `data:image/jpeg;base64,${Buffer.from(buff).toString("base64")}`;
   }
 
+  const colors: PlayerProps['colors'] = {};
+  if (params?.['progress-bar'] && /^#([a-f\d]{6}|[a-f\d]{3})$/i.test(params?.['progress-bar'])) {
+    colors.progressBar = params?.['progress-bar'];
+  }
+
   const artist = (item.artists || []).map(({ name }) => name).join(", ");
   const text = renderToString(
-    Player({ cover: coverImg, artist, track, isPlaying, progress, duration })
+    Player({ cover: coverImg, artist, track, isPlaying, progress, duration, colors })
   );
   return res.status(200).send(text);
 }
