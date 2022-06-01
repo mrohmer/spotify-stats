@@ -30,7 +30,7 @@ async function getAuthorizationToken() {
   return `Bearer ${response.access_token}`;
 }
 
-const NOW_PLAYING_ENDPOINT = `/me/player/currently-playing`;
+const NOW_PLAYING_ENDPOINT = `/me/player/currently-playing?additional_types=track,episode`;
 export async function nowPlaying(): Promise<Partial<SpotifyApi.CurrentlyPlayingResponse>> {
   const Authorization = await getAuthorizationToken();
   const response = await fetch(`${BASE_URL}${NOW_PLAYING_ENDPOINT}`, {
@@ -43,6 +43,7 @@ export async function nowPlaying(): Promise<Partial<SpotifyApi.CurrentlyPlayingR
     return {};
   } else if (status === 200) {
     const data = await response.json();
+    console.log(data)
     return data;
   }
 }

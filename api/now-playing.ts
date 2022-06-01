@@ -26,8 +26,8 @@ export default async function (req: NowRequest, res: NowResponse) {
   res.setHeader("Content-Type", "image/svg+xml");
   res.setHeader("Cache-Control", "s-maxage=1, stale-while-revalidate");
 
-  const { duration_ms: duration, name: track } = item;
-  const { images = [] } = item.album || {};
+  const { duration_ms: duration, name: track } = item ?? {};
+  const { images = [] } = (item?.type === 'episode' ? item?.show : item?.album) ?? {};
 
   const cover = images[images.length - 1]?.url;
   let coverImg = null;
@@ -41,7 +41,7 @@ export default async function (req: NowRequest, res: NowResponse) {
     colors.progressBar = params?.['progress-bar'];
   }
 
-  const artist = (item.artists || []).map(({ name }) => name).join(", ");
+  const artist = item?.type === 'episode' ? item?.show?.publisher : (item?.artists ?? []).map(({ name }) => name).join(", ");
   const text = renderToString(
     Player({ cover: coverImg, artist, track, isPlaying, progress, duration, colors })
   );
